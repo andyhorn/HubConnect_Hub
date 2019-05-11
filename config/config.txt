@@ -1,0 +1,3 @@
+SSID=Winterfell
+PSK=ShoesStars22WhiskeyBars
+EMAIL=test@test.test

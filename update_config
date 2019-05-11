@@ -1,0 +1,27 @@
+#! bin/bash
+
+# Andy Horn
+# update_config
+# 05/10/2019
+
+# This script will parse the config file and update the
+# wpa_supplicant file with the network ssid and passkey
+
+SUPPLICANT_FILE="/etc/wpa_supplicant/wpa_supplicant.conf"
+BACKUP_DIR="./backup"
+CONFIG_FILE="./config/config.txt"
+
+SSID=$(awk 'BEGIN{FS="="} {if ( $1 == "SSID" ) {print $2}}' $CONFIG_FILE)	# parse the new SSID
+echo "SSID found: $SSID"
+PSK=$(awk 'BEGIN{FS="="} {if ( $1 == "PSK" ) {print $2}}' $CONFIG_FILE)		# parse the new Passkey
+echo "PSK found: $PSK"
+
+echo "Backing up wpa_supplicant"
+sudo cp $SUPPLICANT_FILE $BACKUP_DIR						# backup the wpa_supplicant file
+ls $BACKUP_DIR									# verify the copy
+
+echo "Updating ssid and psk values"
+# use sed to find and replace the old ssid and psk values with the new ones
+sudo sed -i "s/ssid=\".*\"/ssid=\"$SSID\"/g; s/psk=\".*\"/psk=\"$PSK\"/g" $SUPPLICANT_FILE
+sudo sed -i "s/\r//g" $SUPPLICANT_FILE
+echo "Complete!"

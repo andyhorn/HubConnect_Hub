@@ -1,0 +1,17 @@
+#! bin/bash
+
+# Andy Horn
+# kill_obex
+# A short script to kill any running obexpushd background processes
+
+OBEX=$(ps -e | grep obex)			# pull any lines from the process list for obex
+
+if [[ ! -z "$OBEX" ]]; then
+	echo "Obex process running, killing..."
+	ps -e | grep obex >> obex		# dump the line to a temporary file
+	PID=$(awk '{print $1}' obex)		# use awk to parse the PID
+	echo "Obex PID is $PID"
+	sudo kill "$PID"			# kill the process
+	echo "Obex killed"
+	rm -f obex				# remove the temporary file
+fi

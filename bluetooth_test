@@ -1,0 +1,10 @@
+#! bin/bash
+
+# Test for starting the bluetoothctl program in the background
+
+sudo systemctl start bluetooth
+
+sleep 1
+
+echo -e "power on\n" | bluetoothctl
+
