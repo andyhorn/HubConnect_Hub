@@ -13,10 +13,10 @@
 # Once this script has run and the Pi has connected to Wi-Fi, then our main sensor polling
 # script can be run to send sensor data to our servers.
 
-DOWNLOAD_FILE="./bluetooth/temp.txt"
-DOWNLOAD_DIR="./bluetooth"
-CONFIG_FILE="./config/config.txt"
-CONFIG_DIR="./config"
+DOWNLOAD_FILE="/home/pi/bluetooth/temp.txt"
+DOWNLOAD_DIR="/home/pi/bluetooth"
+CONFIG_FILE="/home/pi/config/config.txt"
+CONFIG_DIR="/home/pi/config"
 
 OBEX=$(ps -e | grep obex)			# look to see if any obex processes are currently running
 
@@ -40,10 +40,10 @@ if [[ -f "$DOWNLOAD_FILE" ]]; then
 
 	mv -f  $DOWNLOAD_FILE $CONFIG_FILE 	# move the file to the config directory
 	bash update_config			# run the update script to install the new ssid and psk
+	echo "Configuration updated, reconfiguring wpa..."
+	sudo wpa_cli reconfigure
+	echo "Done! Rebooting..."
+	sudo shutdown -r now
 fi
 
-sleep 30	# sleep for 30 seconds to allow the Pi to connect to the wifi network
-
-ifconfig wlan0	# print the wireless connection status
-
-
+exit 0

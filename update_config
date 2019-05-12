@@ -8,8 +8,8 @@
 # wpa_supplicant file with the network ssid and passkey
 
 SUPPLICANT_FILE="/etc/wpa_supplicant/wpa_supplicant.conf"
-BACKUP_DIR="./backup"
-CONFIG_FILE="./config/config.txt"
+BACKUP_DIR="/home/pi/backup"
+CONFIG_FILE="/home/pi/config/config.txt"
 
 SSID=$(awk 'BEGIN{FS="="} {if ( $1 == "SSID" ) {print $2}}' $CONFIG_FILE)	# parse the new SSID
 echo "SSID found: $SSID"
