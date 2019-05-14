@@ -17,12 +17,13 @@ DOWNLOAD_FILE="/home/pi/bluetooth/temp.txt"
 DOWNLOAD_DIR="/home/pi/bluetooth"
 CONFIG_FILE="/home/pi/config/config.txt"
 CONFIG_DIR="/home/pi/config"
+NODE=
 
 OBEX=$(ps -e | grep obex)			# look to see if any obex processes are currently running
 
 if [[ -z "$OBEX" ]]; then
 	echo "Obex server not running, starting process..."
-	rm -f $DOWNLOAD_FILE			# clear the download directory to prevent errors
+	rm -f "$DOWNLOAD_FILE/*"		# clear the download directory
 	$(sudo obexpushd -B -o $DOWNLOAD_DIR)	# start a background obex server process
 	sudo hciconfig hci0 piscan &		# turn bluetooth on
 	OBEX=$(ps -e | grep obex)		# look to see if it is running
@@ -33,7 +34,7 @@ echo "Entering pairing mode..."
 sleep 120 # sleep for 120 seconds (2 minutes) to allow the server to download the new file
 echo "Pairing mode completed"
 
-bash kill_obex				# after 2 minutes, kill the background process
+bash kill_obex					# after 2 minutes, kill the obex server
 
 if [[ -f "$DOWNLOAD_FILE" ]]; then
 	# if a new file exists
@@ -41,9 +42,14 @@ if [[ -f "$DOWNLOAD_FILE" ]]; then
 	mv -f  $DOWNLOAD_FILE $CONFIG_FILE 	# move the file to the config directory
 	bash update_config			# run the update script to install the new ssid and psk
 	echo "Configuration updated, reconfiguring wpa..."
-	sudo wpa_cli reconfigure
+	sudo wpa_cli reconfigure		# update the wpa_cli
 	echo "Done! Rebooting..."
-	sudo shutdown -r now
+	sudo shutdown -r now			# reboot the Pi
+else
+
+# here is where we start the HubConnect server script
+# bash $NODE
+
 fi
 
 exit 0
